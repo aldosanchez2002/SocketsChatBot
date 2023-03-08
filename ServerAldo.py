@@ -1,37 +1,6 @@
 #!/usr/bin/env python3
 from socket import *
 import time
-s = socket(AF_INET, SOCK_STREAM)
-
-# PART A
-s.connect(("nigelward.com",80))
-s.send("GET / HTTP/1.1\nHost: nigelward.com\n\n".encode())
-s.recv(1000)
-print(s.recv(11).decode())
-s.recv(989)
-print(s.recv(11).decode())
-s.close()
-
-
-# PART B
-s = socket(AF_INET, SOCK_STREAM)
-s.connect(("",7069))
-    #B1
-recievedB = int.from_bytes(s.recv(1024), byteorder="big")
-print("big to big",recievedB)
-    #B2
-recievedL = int.from_bytes(s.recv(1024), byteorder="little")
-print("big to little",recievedL)
-    #B3
-recieved = ntohs(int.from_bytes(s.recv(1024)))
-print("big to your device",recieved)
-if recieved == recievedL: 
-    print("Your device is little endian")
-else:
-    print("Your device is big endian")
-s.close()
-
-#PART C Server
 
 s = socket(AF_INET, SOCK_STREAM)
 s.bind(("localhost", 7070))
