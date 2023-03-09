@@ -11,7 +11,7 @@ def getInput(file=0):
 if __name__ == '__main__':
     from socket import *
     s = socket(AF_INET, SOCK_STREAM)
-    s.connect(("localhost",7070))
+    s.connect(("localhost",7069))
     try:
         f=open("FAKE.txt", "r")
         print("Reading from file :")
@@ -24,7 +24,6 @@ if __name__ == '__main__':
             fileIn=getInput(f)
             if "EXIT" in x or not fileIn:
                 exit()
-
     except FileNotFoundError:
         x=s.recv(10000).decode()
         while x:

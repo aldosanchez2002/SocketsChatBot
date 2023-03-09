@@ -6,14 +6,13 @@ def main():
         s = socket(AF_INET, SOCK_STREAM)
     except:
         sys.exit('Error opening socket')
-
     try:
-        s.connect(('localhost', 7069))
+        s.connect(('localhost', 7070))
     except:
         sys.exit('Error connecting')
 
     while True:
-        if not (bytes_read := s.recv(1024)):
+        if not (bytes_read := s.recv(1024)) or bytes_read.decode()=="EXIT":
             break
         print(bytes_read.decode())
         s.send(input().encode())
