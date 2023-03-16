@@ -51,4 +51,9 @@ while True:
     time.sleep(int(wait_limit*random.random()))
     c.send(f'{answer[0]} are awesome, but I hate {answer[-1]} too, Bye for now.'.encode())
     time.sleep(0.5)
-    c.send("EXIT".encode())
+    c.close()
+
+    # Server changes:
+    # close the socket from the server side instead of sending an exit message
+    # connect to correct port
+

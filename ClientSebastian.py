@@ -10,7 +10,7 @@ def main():
         sys.exit('Error opening socket')
 
     try:
-        s.connect(('localhost', 7069))
+        s.connect(('localhost', 7070))
     except:
         sys.exit('Error connecting')
 

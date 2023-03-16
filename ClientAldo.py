@@ -1,7 +1,5 @@
 # Aldo Sanchez
-import time
-import threading
-import datetime;
+import time, threading, datetime;
 
 def get_time():
     x= datetime.datetime.now()
@@ -21,20 +19,24 @@ def count(master):
  
 def receive(socket):
     global message
-    message = socket.recv(10000).decode()
-    print("client: server localhost replied at:",get_time())
+    try:
+        message = socket.recv(10000).decode()
+        print("client: server localhost replied at:",get_time())
+    except Exception:
+        print("Connection terminated by Server at:",get_time())
+        message="Server Closed Connection"
 
-
-
-def threads_recv(socket):
+def threads_manager(socket):
     reciever = threading.Thread(target=receive, args=(socket,))
     reciever.start()
     counter = threading.Thread(target=count, args=(reciever,))
     counter.start()
     reciever.join()
+    if message=="Server Closed Connection":
+        exit()
     return message
 
-def getInput(file=0):
+def getFileInput(file=0):
     if file:
         answer = file.readline()
         if not answer:
@@ -43,31 +45,40 @@ def getInput(file=0):
             answer=answer[:-1]
         return answer.replace(","," ")
 
+def fileChatBot(file):
+    print("Reading from file :")
+    fileIn=getFileInput(f)
+    x=threads_manager(s)
+    while x and fileIn:
+        print("client:",x)
+        s.send(fileIn.encode())
+        x=threads_manager(s)
+        fileIn=getFileInput(f)
+        if not fileIn:
+            exit()
+
+def terminalChatBot(s):
+    x=threads_manager(s)
+    while x:
+        print("client:",x)
+        x=input()
+        print("client: you entered: ",x)
+        s.send(x.encode())
+        print("client: sent to server at:",get_time())
+        x=threads_manager(s)
+
 if __name__ == '__main__':
     from socket import *
     s = socket(AF_INET, SOCK_STREAM)
-    s.connect(("localhost",7070))
+    s.connect(("localhost",7069))
     try:
         f=open("FAKEFILE.txt", "r")
-        print("Reading from file :")
-        fileIn=getInput(f)
-        x=threads_recv(s)
-        while x and fileIn:
-            print("clinet:",x)
-            s.send(fileIn.encode())
-            x=threads_recv(s)
-            fileIn=getInput(f)
-            if "EXIT" in x or not fileIn:
-                exit()
-
+        fileChatBot(f)
     except FileNotFoundError:
-        x=threads_recv(s)
-        while x:
-            print("clinet:",x)
-            x=input()
-            print("client: you entered: ",x)
-            s.send(x.encode())
-            print("client: sent to server at:",get_time())
-            x=threads_recv(s)
-            if "EXIT" in x:
-                exit()
+        terminalChatBot(s)
+
+# Client changes:
+# conect to correct port
+# add try block before reading to prevent a broken pipe error when the socket is closed
+# removed the check for a termination message in the recv content
+# broke down methods to improve readability
