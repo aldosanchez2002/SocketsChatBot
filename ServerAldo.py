@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 from socket import *
-import time
-import random
+import time, random
 s = socket(AF_INET, SOCK_STREAM)
 s.bind(("localhost", 7070))
 s.listen(5)
 print("ChatBot Server Started", end=" ")
-wait_limit=20
+#set wait limit here
+wait_limit=6
 if wait_limit<10:
     print('low-delay')
 else:
     print('high-delay')
-
 while True:
     c,a = s.accept()
     print("Received connection from" , a)
@@ -30,7 +29,6 @@ while True:
             passed=True
         else:
             c.send(f"Sorry, I don't understand what {answer} means, try again".encode())
-
     # Question 2
     responses = {
         "no": "Too bad. Anyway, what's an animal you like and two you don't?",
@@ -45,15 +43,11 @@ while True:
             passed = True
         else:
             c.send("Sorry, try again".encode())
-
     # Question 3
     answer=c.recv(10000).decode().split()
     time.sleep(int(wait_limit*random.random()))
     c.send(f'{answer[0]} are awesome, but I hate {answer[-1]} too, Bye for now.'.encode())
-    time.sleep(0.5)
     c.close()
-
     # Server changes:
     # close the socket from the server side instead of sending an exit message
     # connect to correct port
-

@@ -1,10 +1,7 @@
-# Aldo Sanchez
 import time, threading, datetime;
-
 def get_time():
     x= datetime.datetime.now()
     return f"{x.hour}:{x.minute}:{x.second}"
-
 def count(master):
     seconds=0
     while master.is_alive():
@@ -16,16 +13,14 @@ def count(master):
                 print(seconds,"seconds have elapsed")
         seconds+=1
         time.sleep(1)
- 
 def receive(socket):
     global message
     try:
-        message = socket.recv(10000).decode()
-        print("client: server localhost replied at:",get_time())
+         message = socket.recv(10000).decode()
+         print("client: server localhost replied at:",get_time())
     except Exception:
-        print("Connection terminated by Server at:",get_time())
-        message="Server Closed Connection"
-
+         print("Connection terminated by Server at:",get_time())
+         message="Server Closed Connection"
 def threads_manager(socket):
     reciever = threading.Thread(target=receive, args=(socket,))
     reciever.start()
@@ -35,7 +30,6 @@ def threads_manager(socket):
     if message=="Server Closed Connection":
         exit()
     return message
-
 def getFileInput(file=0):
     if file:
         answer = file.readline()
@@ -44,7 +38,6 @@ def getFileInput(file=0):
         if answer[-1]=="\n":
             answer=answer[:-1]
         return answer.replace(","," ")
-
 def fileChatBot(file):
     print("Reading from file :")
     fileIn=getFileInput(f)
@@ -56,7 +49,6 @@ def fileChatBot(file):
         fileIn=getFileInput(f)
         if not fileIn:
             exit()
-
 def terminalChatBot(s):
     x=threads_manager(s)
     while x:
@@ -66,7 +58,6 @@ def terminalChatBot(s):
         s.send(x.encode())
         print("client: sent to server at:",get_time())
         x=threads_manager(s)
-
 if __name__ == '__main__':
     from socket import *
     s = socket(AF_INET, SOCK_STREAM)
@@ -76,7 +67,6 @@ if __name__ == '__main__':
         fileChatBot(f)
     except FileNotFoundError:
         terminalChatBot(s)
-
 # Client changes:
 # conect to correct port
 # add try block before reading to prevent a broken pipe error when the socket is closed
